@@ -16,6 +16,10 @@
 	color: #ffff;
 	font-style: bold;
 }
+.MealsError {
+	text-align: center;
+	color: red;
+}
 
 @keyframes meals-appear {
 	from {

@@ -7,11 +7,15 @@ import classes from "./AvailableMeals.module.css";
 const AvailableMeals = () => {
 	const [meals, setMeals] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [httpError, setHttpError] = useState(null);
 	useEffect(() => {
 		const fetchMeals = async () => {
 			const response = await fetch(
 				"https://mcdonald-s-fe652-default-rtdb.asia-southeast1.firebasedatabase.app/meals.json"
 			);
+			if (!response.ok) {
+				throw new Error("Something went wrong");
+			}
 			const responseData = await response.json();
 
 			// converting the object into an array
@@ -27,13 +31,23 @@ const AvailableMeals = () => {
 			setMeals(loadedMeals);
 			setIsLoading(false);
 		};
-		fetchMeals();
+		fetchMeals().catch((error) => {
+			setIsLoading(false);
+			setHttpError(error.message);
+		});
 	}, []);
 
 	if (isLoading) {
 		return (
 			<section className={classes.MealsLoading}>
 				<p>Loading...</p>
+			</section>
+		);
+	}
+	if (httpError) {
+		return (
+			<section className={classes.MealsError}>
+				<p>{httpError}</p>
 			</section>
 		);
 	}
